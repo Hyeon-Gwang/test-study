@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prettify": "prettier --write *.js **/*.js"
   },
   "repository": {
     "type": "git",
