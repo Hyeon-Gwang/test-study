@@ -38,10 +38,11 @@ class Board {
 
         newArticle.id = `${this.name}-${id}`;
         newArticle.createdDate = date.toISOString();
+        newArticle.isPublished = true;
         this.articles = [...this.articles, newArticle];
     };
     getAllArticles() {
-        return this.articles
+        return this.articles;
     };
 };
 
@@ -53,10 +54,30 @@ class Article {
         this.subject = article.subject;
         this.content = article.content;
         this.author = article.author;
+        this.comments = [];
+        this.isPublished = false;
+    };
+
+    reply(newComment) {
+        if(!this.isPublished) { throw new Error('Board에 추가되지 않은 Article은 사용 불가능합니다.'); };
+
+        // 날짜 형식 YYYY-MM-DDTHH:MM:SS.mmmZ, mmm은 millisecond 단위
+        const date = new Date();
+        newComment.createdDate = date.toISOString();
+        this.comments = [...this.comments, newComment];
+    }
+    getAllComments() {
+        return this.comments;
     };
 };
 
-class Comment {};
+class Comment {
+    constructor(comment) {
+        if(!comment.content || !comment.author) { throw new Error('댓글 내용 혹은 작성자에는 빈 값이 있으면 안됩니다.'); };
+        this.content = comment.content;
+        this.author = comment.author;
+    };
+};
 
 module.exports = {
     Site,
@@ -64,3 +85,30 @@ module.exports = {
     Article,
     Comment,
 };
+
+const mySite = new Site();
+const noticeBoard = new Board('공지사항');
+mySite.addBoard(noticeBoard);
+
+console.log('mySite:', mySite);
+
+// const publishedArticle = new Article({
+//     subject: '첫번째 공지사항입니다.',
+//     content: '테스트 코드는 수정하면 안됩니다.',
+//     author: '강승현',
+// });
+// noticeBoard.publish(publishedArticle);
+// console.log(noticeBoard);
+// const draftArticle = new Article({
+//     subject: '아직 게시하지 않은 공지사항입니다.',
+//     content: '댓글을 달 수 없어야 합니다',
+//     author: '강승현',
+// });
+
+// const comment = new Comment({
+//     content: '넵!',
+//     author: '댕댕이',
+// });
+// publishedArticle.reply(comment);
+// console.log(publishedArticle);
+// draftArticle.reply(comment);
